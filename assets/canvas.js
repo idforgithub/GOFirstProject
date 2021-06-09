@@ -62,7 +62,7 @@ class Circle{
     #speedX = undefined
     #speedY = undefined
 
-    constructor(x = 0, y = 0, radius = 0, colorMethod = 'fill', color = 'black'){
+    constructor(x = 0, y = 0, radius = 0, colorMethod = 'stroke', color = 'black'){
         this.x = x
         this.y = y
         this.radius = radius
