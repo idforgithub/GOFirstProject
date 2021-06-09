@@ -58,6 +58,7 @@ class Circle{
     color2 = undefined
 
     tick = 1
+    #maxRadius = 75;
     #speedX = undefined
     #speedY = undefined
 
@@ -146,14 +147,11 @@ class Circle{
 
         if( mouseVector.x - this.x < (interactRadius*3) && mouseVector.x - this.x > -(interactRadius*3) && 
             mouseVector.y - this.y < (interactRadius*3) && mouseVector.y - this.y > -(interactRadius*3)){
-            this.radius += 3
-            if(this.radius > 50){
-                this.radius = 50
-            } else if(this.radius > (this.prevRadius * interactRadius)){
-                this.radius = (this.prevRadius * interactRadius)
-            }
+            this.radius += interactRadius/2
+            this.radius = this.radius > (this.prevRadius * interactRadius) ? (this.prevRadius * interactRadius) : this.radius
+            this.radius = this.radius > this.#maxRadius ? this.#maxRadius : this.radius
         } else if(this.radius > this.prevRadius)
-            this.radius -= 3
+            this.radius -= interactRadius/2
         
         this.draw()
     }
@@ -175,7 +173,7 @@ function strColorRGB(red = 0, green = 0, blue = 0, alpha = 1){
 }
 
 let circles = []
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 1500; i++) {
 
     let rngRadius = randomNumber(5, 20, true);
 
