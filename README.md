@@ -1,4 +1,4 @@
-Using GO with javascript to create the bubbles and as a [result](https://idforgithub.github.io/GOFirstProject/) ❌ Mobile
+Using GO with javascript to create the bubbles and as a [result](https://idforgithub.github.io/GOFirstProject/) (❌ not support for **Mobile**)
 
 i just follow [Chris Courses](https://www.youtube.com/channel/UC9Yp2yz6-pwhQuPlIDV_mjA) tutorial.
 and as for server im using Golang.
