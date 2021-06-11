@@ -106,6 +106,7 @@ class Circle{
     draw() {
         c.beginPath()
         c.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
+        c.save()
         c.lineWidth = this.strokeThickness
         switch (this.colorMethod.toLowerCase().replace(" ", "")) {
             case "fill+stroke":
@@ -131,6 +132,7 @@ class Circle{
                 c.strokeStyle = this.color
                 c.stroke()
         }
+        c.restore()
         c.closePath()
     }
 
@@ -173,7 +175,7 @@ function strColorRGB(red = 0, green = 0, blue = 0, alpha = 1){
 }
 
 let circles = []
-for (let i = 0; i < 1500; i++) {
+for (let i = 0; i < 1000; i++) {
 
     let rngRadius = randomNumber(5, 20, true);
 
@@ -185,7 +187,7 @@ for (let i = 0; i < 1500; i++) {
         "", // Color
     )
     circle.strokeThickness = randomNumber(.2, 2)
-    circle.tick = randomNumber(.2, 2)
+    circle.tick = randomNumber(-.9, .9)
     circle.randomSpeed()
     circle.setColorMethod(
         randomString([
