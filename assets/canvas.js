@@ -6,41 +6,7 @@ canvas.height = window.innerHeight
 let c = canvas.getContext('2d')
 
 const image = new Image()
-image.src = "assets/mika2.jpg"
-/*
-image.onload = function () {
-    c.globalCompositeOperation = 'source-in';
-    c.drawImage(image, 0, 0, canvas.width, canvas.height)
-}
-*/
-
-/*
-c.fillStyle = "grey"
-c.fillRect(100, 100, 100, 100)
-c.fillRect(400, 100, 100, 100)
-c.fillRect(300, 300, 100, 100)
-
-
-// This is my line
-c.beginPath()
-c.moveTo(50, 300)
-c.lineTo(300, 100)
-c.lineTo(400, 300)
-c.strokeStyle = "purple"
-c.stroke()
-// end my line
-
-
-for (let i = 0; i < 100; i++) {
-    let x = Math.random() * windowWidth
-    let y = Math.random() * windowHeight
-
-    c.beginPath()
-    c.arc(x, y, 30, 0, Math.PI * 2, false)
-    c.strokeStyle = "red"
-    c.stroke()
-}
-*/
+image.src = "assets/mika.jpg"
 
 window.addEventListener('mousemove', function (event) {
     mouseVector.x = event.x
@@ -71,13 +37,13 @@ class Circle{
     #speedX = undefined
     #speedY = undefined
 
-    constructor(x = 0, y = 0, radius = 0, colorMethod = 'stroke', color = 'black'){
+    constructor(x = 0, y = 0, radius = 0, colorMethod = 'stroke'){
         this.x = x
         this.y = y
         this.radius = radius
         this.prevRadius = radius
         this.colorMethod = colorMethod
-        this.color = color
+        this.opacity = 1
 
         this.#fixPosition()
         this.randomSpeed(false)
@@ -88,13 +54,11 @@ class Circle{
         this.#speedY = (isRandom ? Math.random().toFixed(1) : 1) * (Math.random() < 0.5 ? this.tick : -this.tick)
     }
 
-    setColorMethod(method = '', color1 = '', color2 = 'black'){
-        if(method == '' || color1 == '')
+    setColorMethod(method = ''){
+        if(method == '')
             return
         
         this.colorMethod = method
-        this.color = color1
-        this.color2 = color2
     }
 
     #fixPosition(){
@@ -116,34 +80,31 @@ class Circle{
         c.beginPath()
         c.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
         c.save()
-        
-        image.onload = function () {
-            c.globalCompositeOperation = 'source-out'
-            c.drawImage(image, 0, 0, canvas.width, canvas.height)
-        }
         c.lineWidth = this.strokeThickness
+        c.globalAlpha = this.opacity
+        c.globalCompositeOperation = 'source-over'
         switch (this.colorMethod.toLowerCase().replace(" ", "")) {
             case "fill+stroke":
-                c.fillStyle = this.color
-                c.strokeStyle = this.color2
+                c.fillStyle = "white"
+                c.strokeStyle = "white"
                 c.stroke()
                 c.fill()
                 break
 
             case "stroke+fill":
-                c.strokeStyle = this.color
-                c.fillStyle = this.color2
+                c.strokeStyle = "white"
+                c.fillStyle = "white"
                 c.stroke()
                 c.fill()
                 break
             
             case "fill":
-                c.fillStyle = this.color
+                c.fillStyle = "white"
                 c.fill()
                 break
 
             default:
-                c.strokeStyle = this.color
+                c.strokeStyle = "white"
                 c.stroke()
         }
         c.restore()
@@ -189,48 +150,42 @@ function strColorRGB(red = 0, green = 0, blue = 0, alpha = 1){
 }
 
 let circles = []
-for (let i = 0; i < 1000; i++) {
 
-    let rngRadius = randomNumber(5, 20, true);
-
-    let circle = new Circle(
-        Math.random() * innerWidth , // X
-        Math.random() * innerHeight, // Y
-        rngRadius, // Radius
-        "", // Color Method : stroke (by default) / fill / fill+stroke [setMethodColor for set color in fill and stroke]
-        "", // Color
-    )
-    circle.strokeThickness = randomNumber(.2, 2)
-    circle.tick = randomNumber(-.9, .9)
-    circle.randomSpeed()
-    circle.setColorMethod(
-        randomString([
-            "fill",
-            "stroke",
-            "stroke+fill"
-        ]),
-        strColorRGB(
-            Math.floor( Math.random() * 255), 
-            Math.floor( Math.random() * 255), 
-            Math.floor( Math.random() * 255),
-            randomNumber(.2, .8)
-        ), 
-        strColorRGB(
-            Math.floor( Math.random() * 255), 
-            Math.floor( Math.random() * 255), 
-            Math.floor( Math.random() * 255),
-            randomNumber(.2, .8)
+function instantiate(target = 10) {
+    for (let i = 0; i < target; i++) {
+        let rngRadius = randomNumber(5, 20, true);
+    
+        let circle = new Circle(
+            Math.random() * innerWidth , // X
+            Math.random() * innerHeight, // Y
+            rngRadius, // Radius
         )
-    )
-    circles.push(circle)
+        circle.strokeThickness = randomNumber(.2, 2)
+        circle.opacity = randomNumber(.2, .8)
+        circle.tick = randomNumber(-.9, .9)
+        circle.randomSpeed()
+        circle.setColorMethod(
+            randomString([
+                "fill",
+                "stroke",
+                "stroke+fill"
+            ]),
+        )
+        circles.push(circle)
+    }
 }
 
 function animation() {
-    //requestAnimationFrame(animation)
+    requestAnimationFrame(animation)
     c.clearRect(0, 0, innerWidth, innerHeight)
 
     for (let i = 0; i < circles.length; i++) {
         circles[i].update(10)
     }
+    c.globalCompositeOperation = 'source-out'
+    c.drawImage(image, 0, 0, canvas.width, canvas.height)
 }
+
+instantiate(target = 200)
+
 animation()
