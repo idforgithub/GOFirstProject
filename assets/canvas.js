@@ -5,6 +5,15 @@ canvas.height = window.innerHeight
 
 let c = canvas.getContext('2d')
 
+const image = new Image()
+image.src = "assets/mika2.jpg"
+/*
+image.onload = function () {
+    c.globalCompositeOperation = 'source-in';
+    c.drawImage(image, 0, 0, canvas.width, canvas.height)
+}
+*/
+
 /*
 c.fillStyle = "grey"
 c.fillRect(100, 100, 100, 100)
@@ -107,6 +116,11 @@ class Circle{
         c.beginPath()
         c.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
         c.save()
+        
+        image.onload = function () {
+            c.globalCompositeOperation = 'source-out'
+            c.drawImage(image, 0, 0, canvas.width, canvas.height)
+        }
         c.lineWidth = this.strokeThickness
         switch (this.colorMethod.toLowerCase().replace(" ", "")) {
             case "fill+stroke":
@@ -212,7 +226,7 @@ for (let i = 0; i < 1000; i++) {
 }
 
 function animation() {
-    requestAnimationFrame(animation)
+    //requestAnimationFrame(animation)
     c.clearRect(0, 0, innerWidth, innerHeight)
 
     for (let i = 0; i < circles.length; i++) {
