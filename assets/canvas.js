@@ -21,6 +21,17 @@ window.addEventListener('resize', function () {
     canvas.height = window.innerHeight
 })
 
+let temp = false
+addEventListener('mousedown', function () {
+    if(temp){
+        temp = false
+        imageGlobalComposition  = 'overlay'
+    } else {
+        temp = true
+        imageGlobalComposition  = 'source-atop'
+    }
+})
+
 let mouseVector = {
     x: undefined,
     y: undefined
@@ -87,7 +98,7 @@ class Circle{
         c.save()
         c.lineWidth = this.strokeThickness
         c.globalAlpha = this.opacity
-        c.globalCompositeOperation = 'multiply'
+        c.globalCompositeOperation = circleGlobalComposition
         switch (this.colorMethod.toLowerCase().replace(" ", "")) {
             case "fill+stroke":
                 c.fillStyle = this.color1
@@ -154,7 +165,7 @@ function strColorRGB(red = 0, green = 0, blue = 0, alpha = 1){
     return "rgba("+red+", "+green+", "+blue+", "+alpha+")"
 }
 
-let circles = []
+const circles = []
 let radius = {
     min: 0,
     max: 0
@@ -170,7 +181,7 @@ let tick = {
     min: 0,
     max: 0
 }
-function requestTick(min = .2, max = 1) {
+function requestTick(min = .2, max = 2) {
     tick = {
         min: min,
         max: max
@@ -220,14 +231,28 @@ function animation() {
     for (let i = 0; i < circles.length; i++) {
         circles[i].update(10)
     }
-    c.globalCompositeOperation = 'overlay'
+
     c.drawImage(image, 0, 0, canvas.width, canvas.height)
+    c.globalCompositeOperation = imageGlobalComposition
 }
 
+// set circle type of composition
+// for more detail https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+circleGlobalComposition = 'overlay'
+
+// set image background type of composition
+// for more detail https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+imageGlobalComposition  = 'overlay'
+
+// set velocity of circle, by default min = 0.2 and max = 2
 requestTick(.2, 1.2)
 
+// set radius of circle, by default min = 10 and max = 100
 requestRadius(10, 20)
 
+// target = (how much circle to instantiate)
 instantiate(target = 500)
 
+// run animation
 animation()
+
