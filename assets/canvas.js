@@ -34,8 +34,12 @@ class Circle{
 
     tick = 1
     #maxRadius = 75;
+    opacity = 1
     #speedX = undefined
     #speedY = undefined
+
+    color1 = "white"
+    color2 = undefined
 
     constructor(x = 0, y = 0, radius = 0, colorMethod = 'stroke'){
         this.x = x
@@ -43,7 +47,6 @@ class Circle{
         this.radius = radius
         this.prevRadius = radius
         this.colorMethod = colorMethod
-        this.opacity = 1
 
         this.#fixPosition()
         this.randomSpeed(false)
@@ -54,11 +57,13 @@ class Circle{
         this.#speedY = (isRandom ? Math.random().toFixed(1) : 1) * (Math.random() < 0.5 ? this.tick : -this.tick)
     }
 
-    setColorMethod(method = ''){
-        if(method == '')
+    setColorMethod(method = '', color1 = '', color2 = 'black'){
+        if(method == '' || color1 == '')
             return
         
         this.colorMethod = method
+        this.color1 = color1
+        this.color2 = color2
     }
 
     #fixPosition(){
@@ -82,29 +87,29 @@ class Circle{
         c.save()
         c.lineWidth = this.strokeThickness
         c.globalAlpha = this.opacity
-        c.globalCompositeOperation = 'source-over'
+        c.globalCompositeOperation = 'multiply'
         switch (this.colorMethod.toLowerCase().replace(" ", "")) {
             case "fill+stroke":
-                c.fillStyle = "white"
-                c.strokeStyle = "white"
+                c.fillStyle = this.color1
+                c.strokeStyle = this.color2
                 c.stroke()
                 c.fill()
                 break
 
             case "stroke+fill":
-                c.strokeStyle = "white"
-                c.fillStyle = "white"
+                c.strokeStyle = this.color1
+                c.fillStyle = this.color2
                 c.stroke()
                 c.fill()
                 break
             
             case "fill":
-                c.fillStyle = "white"
+                c.fillStyle = this.color1
                 c.fill()
                 break
 
             default:
-                c.strokeStyle = "white"
+                c.strokeStyle = this.color1
                 c.stroke()
         }
         c.restore()
@@ -150,10 +155,31 @@ function strColorRGB(red = 0, green = 0, blue = 0, alpha = 1){
 }
 
 let circles = []
+let radius = {
+    min: 0,
+    max: 0
+}
+function requestRadius(min = 10, max = 100) {
+    radius = {
+        min: min,
+        max: max
+    }
+}
+
+let tick = {
+    min: 0,
+    max: 0
+}
+function requestTick(min = .2, max = 1) {
+    tick = {
+        min: min,
+        max: max
+    }
+}
 
 function instantiate(target = 10) {
     for (let i = 0; i < target; i++) {
-        let rngRadius = randomNumber(5, 20, true);
+        let rngRadius = randomNumber(radius.min, radius.max, true);
     
         let circle = new Circle(
             Math.random() * innerWidth , // X
@@ -162,7 +188,7 @@ function instantiate(target = 10) {
         )
         circle.strokeThickness = randomNumber(.2, 2)
         circle.opacity = randomNumber(.2, .8)
-        circle.tick = randomNumber(-.9, .9)
+        circle.tick = randomNumber(tick.min, tick.max)
         circle.randomSpeed()
         circle.setColorMethod(
             randomString([
@@ -170,6 +196,18 @@ function instantiate(target = 10) {
                 "stroke",
                 "stroke+fill"
             ]),
+            strColorRGB(
+                randomNumber(0, 255, true),
+                randomNumber(0, 255, true),
+                randomNumber(0, 255, true),
+                randomNumber(.2, .9)
+            ),
+            strColorRGB(
+                randomNumber(0, 255, true),
+                randomNumber(0, 255, true),
+                randomNumber(0, 255, true),
+                randomNumber(.2, .9)
+            )
         )
         circles.push(circle)
     }
@@ -182,10 +220,14 @@ function animation() {
     for (let i = 0; i < circles.length; i++) {
         circles[i].update(10)
     }
-    c.globalCompositeOperation = 'source-out'
+    c.globalCompositeOperation = 'overlay'
     c.drawImage(image, 0, 0, canvas.width, canvas.height)
 }
 
-instantiate(target = 200)
+requestTick(.2, 1.2)
+
+requestRadius(10, 20)
+
+instantiate(target = 500)
 
 animation()
