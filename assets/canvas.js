@@ -6,7 +6,7 @@ canvas.height = window.innerHeight
 let c = canvas.getContext('2d')
 
 const image = new Image()
-image.src = "assets/mika.jpg"
+image.src = "assets/img.jpg"
 
 window.addEventListener('mousemove', function (event) {
     mouseVector.x = event.x
@@ -208,15 +208,15 @@ function instantiate(target = 10) {
                 "stroke+fill"
             ]),
             strColorRGB(
-                randomNumber(0, 255, true),
-                randomNumber(0, 255, true),
-                randomNumber(0, 255, true),
+                255,
+                255,
+                255,
                 randomNumber(.2, .9)
             ),
             strColorRGB(
-                randomNumber(0, 255, true),
-                randomNumber(0, 255, true),
-                randomNumber(0, 255, true),
+                255,
+                255,
+                255,
                 randomNumber(.2, .9)
             )
         )
